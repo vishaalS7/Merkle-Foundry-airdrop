@@ -1,7 +1,7 @@
 // SPDX-Licence-Indentifier: MIT
 pragma solidity ^0.8.24;
 
-import { Script, console } from "forge-std/Script.sol";
+import { Script, console } from "../lib/forge-std/src/Script.sol";
 import { DevOpsTools } from "../lib/foundry-devops/src/DevOpsTools.sol";
 import { MerkleAirdrop } from "../src/MerkleAirdrop.sol";
 
@@ -12,9 +12,10 @@ contract ClaimAirdrop is Script {
     bytes32 private constant PROOF_ONE = 0xd1445c931158119b00449ffcac3c947d028c0c359c34a6646d95962b3b55c6ad;
     bytes32 private constant PROOF_TWO = 0x46f4c7c1c21e8a90c03949beda51d2d02d1ec75b55dd97a999d3edbafa5a1e2f;
     bytes32[] private proof = [PROOF_ONE, PROOF_TWO];
-    
+
     // the signature will change every time you redeploy the airdrop contract!
-    bytes private SIGNATURE = hex"fbd2270e6f23fb5fe9248480c0f4be8a4e9bd77c3ad0b1333cc60b5debc511602a2a06c24085d8d7c038bad84edc53664c8ce0346caeaa3570afec0e61144dc11c";
+    bytes private SIGNATURE =
+        hex"fbd2270e6f23fb5fe9248480c0f4be8a4e9bd77c3ad0b1333cc60b5debc511602a2a06c24085d8d7c038bad84edc53664c8ce0346caeaa3570afec0e61144dc11c";
 
     error __ClaimAirdropScript__InvalidSignatureLength();
 
@@ -30,7 +31,7 @@ contract ClaimAirdrop is Script {
     function splitSignature(bytes memory sig) public pure returns (uint8 v, bytes32 r, bytes32 s) {
         if (sig.length != 65) {
             revert __ClaimAirdropScript__InvalidSignatureLength();
-        }   
+        }
         assembly {
             r := mload(add(sig, 32))
             s := mload(add(sig, 64))
@@ -43,4 +44,3 @@ contract ClaimAirdrop is Script {
         claimAirdrop(mostRecentlyDeployed);
     }
 }
-

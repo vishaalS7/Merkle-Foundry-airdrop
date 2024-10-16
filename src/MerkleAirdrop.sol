@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import { MerkleProof } from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
-import { IERC20, SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import { EIP712 } from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
-import { SignatureChecker } from "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
-import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import { MessageHashUtils } from "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
+import { MerkleProof } from "../lib/openzeppelin-contracts/contracts/utils/cryptography/MerkleProof.sol";
+import { IERC20, SafeERC20 } from "../lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
+import { EIP712 } from "../lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol";
+import { SignatureChecker } from "../lib/openzeppelin-contracts/contracts/utils/cryptography/SignatureChecker.sol";
+import { ECDSA } from "../lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
+import { MessageHashUtils } from "../lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol";
 
 /**
  * @title Merkle Airdrop - Airdrop tokens to users who can prove they are in a merkle tree
@@ -14,7 +14,9 @@ import { MessageHashUtils } from "@openzeppelin/contracts/utils/cryptography/Mes
  * @author Patrick Collins
  * @author Cyfrin
  */
-contract MerkleAirdrop is EIP712 {
+contract MerkleAirdrop is
+    EIP712 //
+{
     using ECDSA for bytes32;
     using SafeERC20 for IERC20; // Prevent sending tokens to recipients who can’t receive
 
@@ -114,12 +116,8 @@ contract MerkleAirdrop is EIP712 {
         returns (bool)
     {
         // could also use SignatureChecker.isValidSignatureNow(signer, digest, signature)
-        (
-            address actualSigner,
-            /*ECDSA.RecoverError recoverError*/
-            ,
-            /*bytes32 signatureLength*/
-        ) = ECDSA.tryRecover(digest, _v, _r, _s);
+        (address actualSigner, /*ECDSA.RecoverError recoverError*/,) = /*bytes32 signatureLength*/
+            ECDSA.tryRecover(digest, _v, _r, _s);
         return (actualSigner == signer);
     }
 
